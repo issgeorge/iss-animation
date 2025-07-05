@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ISS Animation</title>
+  <title>ISS Animation with Lottie</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lottie-web@5.7.4/build/player/lottie.min.js"></script>
   <style>
     body {
       background: #000;
@@ -13,6 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       min-height: 100vh;
       margin: 0;
     }
@@ -21,41 +23,33 @@
       text-align: center;
       font-size: 2rem;
       line-height: 2.2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s ease-out forwards;
     }
 
-    .blinking {
-      animation: blink 1s step-end infinite;
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    .float-up {
-      animation: floatUp 0.5s forwards ease-out;
-    }
-
-    .float-down {
-      animation: floatDown 0.5s forwards ease-out;
-    }
-
-    @keyframes floatUp {
-      to { transform: translateY(-2rem); }
-    }
-
-    @keyframes floatDown {
-      to { transform: translateY(2rem); }
+    .lottie-container {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 2rem;
     }
 
     .emerge {
       opacity: 0;
-      animation: emerge 0.5s ease forwards;
+      animation: emerge 1s ease forwards;
     }
 
     @keyframes emerge {
       from {
         opacity: 0;
-        transform: scale(0.5);
+        transform: scale(0.8);
       }
       to {
         opacity: 1;
@@ -65,13 +59,24 @@
   </style>
 </head>
 <body>
+  <div class="lottie-container" id="lottie"></div>
+
   <div class="container">
     <div id="line1"></div>
-    <div id="middle"></div>
+    <div id="middle" class="emerge"></div>
     <div id="line2"></div>
   </div>
 
   <script>
+    // Lottie load
+    lottie.loadAnimation({
+      container: document.getElementById('lottie'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'https://assets1.lottiefiles.com/packages/lf20_3vbOcw.json' // glowing animation
+    });
+
     const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
     const typeText = async (el, text) => {
@@ -86,13 +91,7 @@
       const line2 = document.getElementById("line2");
       const middle = document.getElementById("middle");
 
-      // Blink cursor 3 times
-      line1.textContent = "|";
-      await sleep(500); line1.textContent = "";
-      await sleep(250); line1.textContent = "|";
-      await sleep(250); line1.textContent = "";
-      await sleep(250); line1.textContent = "|";
-      await sleep(250); line1.textContent = "";
+      await sleep(500);
 
       // Type Ignatius
       await typeText(line1, "Ignatius");
@@ -101,11 +100,6 @@
       // Type Santosh
       await typeText(line2, "Santosh");
       await sleep(600);
-
-      // Animate push up/down
-      line1.classList.add("float-up");
-      line2.classList.add("float-down");
-      await sleep(500);
 
       // Show Stanis
       middle.textContent = "Stanis";
