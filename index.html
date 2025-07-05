@@ -1,14 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Name Animation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-black text-green-400 font-sans">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Name Animation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #000;
+      color: #00ff88;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      font-size: 2rem;
+      line-height: 2.2rem;
+    }
+
+    .blinking {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .float-up {
+      animation: floatUp 0.5s forwards ease-out;
+    }
+
+    .float-down {
+      animation: floatDown 0.5s forwards ease-out;
+    }
+
+    @keyframes floatUp {
+      to { transform: translateY(-2rem); }
+    }
+
+    @keyframes floatDown {
+      to { transform: translateY(2rem); }
+    }
+
+    .emerge {
+      opacity: 0;
+      animation: emerge 0.5s ease forwards;
+    }
+
+    @keyframes emerge {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="line1"></div>
+    <div id="middle"></div>
+    <div id="line2"></div>
+  </div>
+
+  <script>
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+    const typeText = async (el, text) => {
+      for (let i = 0; i < text.length; i++) {
+        el.textContent += text[i];
+        await sleep(100);
+      }
+    };
+
+    async function animate() {
+      const line1 = document.getElementById("line1");
+      const line2 = document.getElementById("line2");
+      const middle = document.getElementById("middle");
+
+      // Blink cursor 3 times
+      line1.textContent = "|";
+      await sleep(500); line1.textContent = "";
+      await sleep(250); line1.textContent = "|";
+      await sleep(250); line1.textContent = "";
+      await sleep(250); line1.textContent = "|";
+      await sleep(250); line1.textContent = "";
+
+      // Type Ignatius
+      await typeText(line1, "Ignatius");
+      await sleep(400);
+
+      // Type Santosh
+      await typeText(line2, "Santosh");
+      await sleep(600);
+
+      // Animate push up/down
+      line1.classList.add("float-up");
+      line2.classList.add("float-down");
+      await sleep(500);
+
+      // Show Stanis
+      middle.textContent = "Stanis";
+      middle.classList.add("emerge");
+    }
+
+    animate();
+  </script>
+</body>
 </html>
