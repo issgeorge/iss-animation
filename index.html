@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Name Animation</title>
+  <style>
+    body {
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .line {
+      white-space: pre;
+      height: 1.5em;
+      overflow: hidden;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 1ch;
+      animation: blink 0.7s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { background: transparent; }
+      50% { background: #0f0; }
+    }
+
+    .word {
+      display: inline-block;
+    }
+
+    .ripple {
+      animation: rippleMove 0.6s ease-in-out forwards;
+    }
+
+    @keyframes rippleMove {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-20px); }
+      100% { transform: translateY(40px); }
+    }
+
+    .emerge {
+      opacity: 0;
+      transform: scale(0.5);
+      animation: emergeAnim 0.6s ease-out forwards;
+    }
+
+    @keyframes emergeAnim {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="line" id="line1"><span id="text1"></span><span class="cursor" id="cursor1"></span></div>
+  <div class="line" id="line2"><span id="text2"></span></div>
+  <div class="line" id="middle"></div>
+
+  <script>
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+    async function typeText(element, text, delay = 100) {
+      for (let char of text) {
+        element.textContent += char;
+        await sleep(delay);
+      }
+    }
+
+    async function animateSequence() {
+      const text1 = document.getElementById("text1");
+      const text2 = document.getElementById("text2");
+      const cursor1 = document.getElementById("cursor1");
+      const middle = document.getElementById("middle");
+
+      // 1. Blink cursor for 2-3 times (~1.5s)
+      await sleep(1500);
+
+      // 2. Type Ignatius
+      await typeText(text1, "Ignatius");
+
+      // 3. Press enter (cursor goes to next line)
+      cursor1.style.display = "none";
+      await sleep(500);
+
+      // 4. Type Santosh
+      await typeText(text2, "Santosh");
+
+      // 5. Ripple effect
+      text1.classList.add("ripple");
+      text2.classList.add("ripple");
+      await sleep(700);
+
+      // 6. Insert "Stanis" in between
+      const stanis = document.createElement("div");
+      stanis.textContent = "Stanis";
+      stanis.className = "emerge";
+      middle.appendChild(stanis);
+    }
+
+    animateSequence();
+  </script>
+</body>
+</html>
